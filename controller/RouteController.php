@@ -16,6 +16,7 @@ class RouteController {
         $this->dateTimeView = new dateTimeView();
         $this->loginView = new LoginView();
         $this->registerView = new RegisterView();
+        $this->gamesView = new GamesView();
 
         $this->session = new Session();
         $this->server = new Server();
@@ -25,8 +26,13 @@ class RouteController {
 
     public function route() {
         if ($this->session->isLoggedIn()) {
-            $isLoggedIn = $this->notHijacked();
-            $this->renderLoginPage($isLoggedIn);
+            if ($this->userWantsToPlayGames()) {
+                $isLoggedIn = true;
+                $this->renderGamesPage($isLoggedIn);
+            } else {
+                $isLoggedIn = $this->notHijacked();
+                $this->renderLoginPage($isLoggedIn);
+            }
         } else if ($this->userWantsToRegister()) {
             $isLoggedIn = false;
             $this->renderRegisterPage($isLoggedIn);
@@ -75,5 +81,13 @@ class RouteController {
             return true;
         }
         return false;
+    }
+
+    private function userWantsToPlayGames() {
+        return $this->get->getVariableIsSet('games');
+    }
+
+    private function renderGamesPage($isLoggedIn) {
+        $this->layoutView->render($isLoggedIn, $this->gamesView, $this->dateTimeView);
     }
 }

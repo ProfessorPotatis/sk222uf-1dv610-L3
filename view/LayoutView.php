@@ -16,6 +16,7 @@ class LayoutView {
           <body>
             <h1>Assignment 2</h1>
             ' . $this->renderRegisterLink($isLoggedIn) . '
+            ' . $this->renderGamesLink($isLoggedIn) . '
             ' . $this->renderIsLoggedIn($isLoggedIn) . '
             
             <div class="container">
@@ -46,6 +47,16 @@ class LayoutView {
         } else {
           return '<a href="?register">Register a new user</a>';
         }
+      }
+    }
+
+    private function renderGamesLink($isLoggedIn) {
+      if ($isLoggedIn && $this->get->getVariableIsSet('games')) {
+        return '<a href="?">Back to login</a>';
+      } else if ($isLoggedIn) {
+        return '<a href="?games">Play games</a>';
+      } else {
+        return;
       }
     }
 }
