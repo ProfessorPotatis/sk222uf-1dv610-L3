@@ -10,7 +10,11 @@ class LoginView {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
 
-	
+	private $username;
+	private $session;
+	private $loginController;
+	private $registerController;
+	private $cookie;
 
 	/**
 	 * Create HTTP response
@@ -20,10 +24,25 @@ class LoginView {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$message = '';
-		
-		$response = $this->generateLoginFormHTML($message);
-		//$response .= $this->generateLogoutButtonHTML($message);
+		$this->session = new Session();
+
+		$this->loginController = new LoginController();
+		$this->loginController->handleUserRequest();
+		$message = $this->loginController->getMessage();
+
+		$this->registerController = new RegisterController();
+
+		$this->cookie = new Cookie();
+		$cookiePasswordIsSet = $this->cookie->cookieIsSet(self::$cookiePassword);
+		$cookiePassword = $this->cookie->getCookieVariable(self::$cookiePassword);
+
+		if ($this->session->isLoggedIn()) {
+			$response = $this->generateLogoutButtonHTML($message);
+		} else if ($cookiePasswordIsSet && !empty($cookiePassword)) {
+			$response = $this->generateLogoutButtonHTML($message);
+		} else {
+			$response = $this->generateLoginFormHTML($message);
+		}
 		return $response;
 	}
 
@@ -47,6 +66,9 @@ class LoginView {
 	* @return  void, BUT writes to standard output!
 	*/
 	private function generateLoginFormHTML($message) {
+
+		$this->username = $this->getRequestUserName();
+
 		return '
 			<form method="post" > 
 				<fieldset>
@@ -54,7 +76,7 @@ class LoginView {
 					<p id="' . self::$messageId . '">' . $message . '</p>
 					
 					<label for="' . self::$name . '">Username :</label>
-					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
+					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="' . $this->username . '" />
 
 					<label for="' . self::$password . '">Password :</label>
 					<input type="password" id="' . self::$password . '" name="' . self::$password . '" />
@@ -68,9 +90,21 @@ class LoginView {
 		';
 	}
 	
-	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	private function getRequestUserName() {
-		//RETURN REQUEST VARIABLE: USERNAME
+		$username;
+
+		$providedLoginUsername = $this->loginController->getUsername();
+		$sessionUsername = $this->session->getSessionVariable('username');
+
+		if (!empty($providedLoginUsername)) {
+			$username = $providedLoginUsername;
+		} else if (!empty($sessionUsername)) {
+			$username = $sessionUsername;
+			$this->session->unsetSessionVariable('username');
+		} else {
+			$username = '';
+		}
+
+		return $username;
 	}
-	
 }
