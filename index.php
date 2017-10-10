@@ -17,6 +17,7 @@ require_once('view/LayoutView.php');
 require_once('controller/RouteController.php');
 require_once('controller/LoginController.php');
 require_once('controller/RegisterController.php');
+require_once('controller/GamesController.php');
 require_once('controller/FormValidator.php');
 
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER

@@ -1,7 +1,42 @@
+#keyPad {
+	width: 160px;
+}
+
+#keyPad input {
+	border: 1px solid #000;
+	width: 50px;
+	height: 40px;
+	border-radius: 5px;
+	background-color: rgb(167, 163, 163);
+	box-shadow: 3px 3px 3px #c9c9c9 inset;
+}
+
+#keyPad :hover {
+	background-color: rgb(111, 108, 108);
+	box-shadow: 3px 3px 3px #353535 inset;
+}
+
+.gameUp {
+	margin-left: 55px;
+	margin-right: 55px;
+}
+
+.gameLeft {
+	display: inline;
+}
+
+.gameDown {
+	display: inline;
+}
+
+.gameRight {
+	display: inline;
+}
+
 .content {
 	height: 320px;
 	width: 320px;
-	position: absolute;
+	/*position: absolute;*/
 	margin-top: 20px;
     border: 1px solid #73AD21;
 }
