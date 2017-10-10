@@ -17,8 +17,8 @@ class GamesView {
 		$this->get = new Get();
 
 		/*$this->gamesController = new GamesController();
-		$this->gamesController->handleUserRequest();
-		$message = $this->gamesController->getMessage();*/
+		$this->gamesController->handleUserRequest();*/
+		/*$message = $this->gamesController->getMessage();*/
 
 		$gamesIsSet = $this->get->getVariableIsSet('games');
 
@@ -31,8 +31,11 @@ class GamesView {
 	
 	private function generateGamesHTML(/*$message*/) {
         return '
-        <p>______________________________</p>
-		<h2>Play game</h2>
+        <h1>Dinosaur Life</h1>
+        <p>Control the character with the arrowkeys.</p>
+        <div id="content" class="content">
+            <div id="baddie" class="content"></div>
+        </div>
 	    ';
 	}
 }
