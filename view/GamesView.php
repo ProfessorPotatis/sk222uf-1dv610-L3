@@ -40,6 +40,8 @@ class GamesView {
         $dinoMarginLeft = $this->gamesController->getDinoMarginLeft();
         $dinoMarginTop = $this->gamesController->getDinoMarginTop();
 
+        $dinoFacingDirection = $this->gamesController->getDinoFacingDirection();
+
         $html = '
         <h1>Dinosaur Life</h1>
         <form method="post" > 
@@ -57,7 +59,7 @@ class GamesView {
             $html .= $tiles[$i];
         }
 
-        $html .= '<div id="dino" class="content" style="margin-left:' . $dinoMarginLeft . 'px; margin-top:' . $dinoMarginTop . 'px;"></div>
+        $html .= '<div id="dino" class="content ' . $dinoFacingDirection . '" style="margin-left:' . $dinoMarginLeft . 'px; margin-top:' . $dinoMarginTop . 'px;"></div>
         </div>
         ';
         

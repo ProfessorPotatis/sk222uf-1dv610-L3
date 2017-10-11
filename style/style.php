@@ -64,7 +64,7 @@ $tileHeight = '32px';
 	background-repeat:no-repeat;
 }
 
-.baddie-left {
+.left {
 	-o-transform: rotateY(180deg);
 	-ms-transform: rotateY(180deg);
 	-webkit-transform: rotateY(180deg);

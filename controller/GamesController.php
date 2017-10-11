@@ -1,11 +1,13 @@
 <?php
 
 class GamesController {
+    private $gdb;
     private $dinoGame;
 
     private $gameMap;
     private $dinoMarginLeft;
     private $dinoMarginTop;
+    private $dinoFacingDirection;
 
     public function __construct() {
         $this->dinoGame = new DinoGame();
@@ -42,5 +44,10 @@ class GamesController {
     public function getDinoMarginTop() {
         $this->dinoMarginTop = $this->dinoGame->dinoPositionTop();
         return $this->dinoMarginTop;
+    }
+
+    public function getDinoFacingDirection() {
+        $this->dinoFacingDirection = $this->dinoGame->dinoFacingDirection();
+        return $this->dinoFacingDirection;
     }
 }

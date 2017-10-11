@@ -7,6 +7,7 @@ require_once('model/Request.php');
 require_once('model/Get.php');
 require_once('model/Post.php');
 require_once('model/Cookie.php');
+require_once('model/GameDatabase.php');
 require_once('model/DinoGame.php');
 
 require_once('view/LoginView.php');
