@@ -1,10 +1,17 @@
 <?php
 
 class GamesController {
+    private $dinoGame;
+
     private $gameMap;
+    private $dinoMarginLeft;
+    private $dinoMarginTop;
 
     public function __construct() {
-        $this->gameMap = $this->generateGameMap();
+        $this->dinoGame = new DinoGame();
+        $this->gameMap = $this->dinoGame->generateGameMap();
+        $this->dinoMarginLeft = $this->dinoGame->dinoPositionLeft();
+        $this->dinoMarginTop = $this->dinoGame->dinoPositionTop();
     }
 
     public function getGameMap() {
@@ -14,28 +21,26 @@ class GamesController {
     public function handleUserRequest() {        
         if (isset($_POST['GameView::UpArrow'])) {
             echo 'up';
+            $this->dinoGame->dinoMovesUp();
         } else if (isset($_POST['GameView::LeftArrow'])) {
             echo 'left';
+            $this->dinoGame->dinoMovesLeft();
         } else if (isset($_POST['GameView::DownArrow'])) {
             echo 'down';
+            $this->dinoGame->dinoMovesDown();
         } else if (isset($_POST['GameView::RightArrow'])) {
             echo 'right';
+            $this->dinoGame->dinoMovesRight();
         }
     }
 
-    private function generateGameMap() {
-        $gameMap = array(
-            11,11,11,11,11,11,11,11,11,11,
-            11,10,10,10,10,10,10,10,10,11,
-            11,11,11,11,13,11,11,11,10,12,
-            11,10,10,10,10,11,10,10,10,11,
-            11,10,10,10,10,10,10,11,11,11,
-            11,10,11,11,11,10,10,10,10,11,
-            11,10,12,10,11,10,10,10,10,11,
-            11,10,10,10,11,10,10,10,10,13,
-            11,10,10,10,10,10,10,10,10,11,
-            11,11,11,11,11,11,11,11,11,11,);
+    public function getDinoMarginLeft() {
+        $this->dinoMarginLeft = $this->dinoGame->dinoPositionLeft();
+        return $this->dinoMarginLeft;
+    }
 
-        return $gameMap;
+    public function getDinoMarginTop() {
+        $this->dinoMarginTop = $this->dinoGame->dinoPositionTop();
+        return $this->dinoMarginTop;
     }
 }

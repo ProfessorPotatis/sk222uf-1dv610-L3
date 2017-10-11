@@ -12,7 +12,7 @@ class LayoutView {
           <head>
             <meta charset="utf-8">
             <title>Login Example</title>
-            <link rel="stylesheet" type="text/css" href="style/style.css">
+            <link rel="stylesheet" type="text/css" href="style/style.php">
           </head>
           <body>
             <h1>Assignment 2</h1>

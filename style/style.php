@@ -1,5 +1,16 @@
+<?php
+header("Content-type: text/css"); 
+$keyPadWidth = '160px';
+
+$tileWidth = '32px';
+$tileHeight = '32px';
+
+//$dinoMarginLeft = '32px';
+//$dinoMarginTop = '32px';
+?>
+
 #keyPad {
-	width: 160px;
+	width:<?=$keyPadWidth?>;
 }
 
 #keyPad input {
@@ -43,9 +54,9 @@
 
 
 #dino {
-	margin-left: 32px;
+
 	position: absolute;
-	margin-top: 32px;
+
 	z-index:10;
 	width:32px;
 	height:32px;
@@ -62,8 +73,8 @@
 }
 
 .tile, .t {
-	width: 32px;
-	height: 32px;
+	width: <?=$tileWidth?>;
+	height: <?=$tileHeight?>;
 	float: left;
 	background-repeat: no-repeat;
 }

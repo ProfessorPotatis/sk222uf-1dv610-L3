@@ -37,6 +37,9 @@ class GamesView {
 	private function generateGamesHTML() {
         $tiles = $this->getTiles();
 
+        $dinoMarginLeft = $this->gamesController->getDinoMarginLeft();
+        $dinoMarginTop = $this->gamesController->getDinoMarginTop();
+
         $html = '
         <h1>Dinosaur Life</h1>
         <form method="post" > 
@@ -54,7 +57,7 @@ class GamesView {
             $html .= $tiles[$i];
         }
 
-        $html .= '<div id="baddie" class="content"></div>
+        $html .= '<div id="dino" class="content" style="margin-left:' . $dinoMarginLeft . 'px; margin-top:' . $dinoMarginTop . 'px;"></div>
         </div>
         ';
         
