@@ -1,16 +1,15 @@
-<?php
-header("Content-type: text/css"); 
-$keyPadWidth = '160px';
+<?php header("Content-type: text/css");?>
 
-$tileWidth = '32px';
-$tileHeight = '32px';
-
-//$dinoMarginLeft = '32px';
-//$dinoMarginTop = '32px';
-?>
+.keyPad {
+    margin-top: 80px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+    float: right;
+}
 
 #keyPad {
-	width:<?=$keyPadWidth?>;
+    width: 160px;
 }
 
 #keyPad input {
@@ -24,6 +23,22 @@ $tileHeight = '32px';
 
 #keyPad :hover {
 	background-color: rgb(111, 108, 108);
+	box-shadow: 3px 3px 3px #353535 inset;
+}
+
+.reset input {
+    margin-top: 40px;
+    display: inline-block;
+    border: 1px solid #000;
+	width: 160px;
+	height: 40px;
+	border-radius: 5px;
+	background-color: rgb(167, 163, 163);
+	box-shadow: 3px 3px 3px #c9c9c9 inset;
+}
+
+.reset :hover {
+    background-color: rgb(111, 108, 108);
 	box-shadow: 3px 3px 3px #353535 inset;
 }
 
@@ -47,16 +62,12 @@ $tileHeight = '32px';
 .content {
 	height: 320px;
 	width: 320px;
-	/*position: absolute;*/
 	margin-top: 20px;
     border: 1px solid #73AD21;
 }
 
-
 #dino {
-
 	position: absolute;
-
 	z-index:10;
 	width:32px;
 	height:32px;
@@ -73,8 +84,8 @@ $tileHeight = '32px';
 }
 
 .tile, .t {
-	width: <?=$tileWidth?>;
-	height: <?=$tileHeight?>;
+	width: 32px;
+	height: 32px;
 	float: left;
 	background-repeat: no-repeat;
 }

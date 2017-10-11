@@ -11,28 +11,28 @@ class GamesController {
 
     public function __construct() {
         $this->dinoGame = new DinoGame();
-        $this->gameMap = $this->dinoGame->generateGameMap();
+        $this->dinoGame->startGame();
         $this->dinoMarginLeft = $this->dinoGame->dinoPositionLeft();
         $this->dinoMarginTop = $this->dinoGame->dinoPositionTop();
     }
 
     public function getGameMap() {
+        $this->gameMap = $this->dinoGame->getGameMap();
         return $this->gameMap;
     }
 
     public function handleUserRequest() {        
         if (isset($_POST['GameView::UpArrow'])) {
-            echo 'up';
             $this->dinoGame->dinoMovesUp();
         } else if (isset($_POST['GameView::LeftArrow'])) {
-            echo 'left';
             $this->dinoGame->dinoMovesLeft();
         } else if (isset($_POST['GameView::DownArrow'])) {
-            echo 'down';
             $this->dinoGame->dinoMovesDown();
         } else if (isset($_POST['GameView::RightArrow'])) {
-            echo 'right';
             $this->dinoGame->dinoMovesRight();
+        } else if (isset($_POST['GameView::Reset'])) {
+            $this->dinoGame->resetGame();
+            $this->redirectToSelf();
         }
     }
 
@@ -49,5 +49,9 @@ class GamesController {
     public function getDinoFacingDirection() {
         $this->dinoFacingDirection = $this->dinoGame->dinoFacingDirection();
         return $this->dinoFacingDirection;
+    }
+
+    private function redirectToSelf() {
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?games');
     }
 }

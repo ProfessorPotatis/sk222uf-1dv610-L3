@@ -1,6 +1,7 @@
 <?php
 
 class GamesView {
+    private static $reset = 'GameView::Reset';
     private static $leftArrow = 'GameView::LeftArrow';
     private static $upArrow = 'GameView::UpArrow';
     private static $rightArrow = 'GameView::RightArrow';
@@ -43,17 +44,21 @@ class GamesView {
         $dinoFacingDirection = $this->gamesController->getDinoFacingDirection();
 
         $html = '
-        <h1>Dinosaur Life</h1>
-        <form method="post" > 
+        <h1>Dinosaur Move Boxes</h1>
+        <p>Control the dinosaur with the keys and move the boxes around.<br>
+        1. Try moving all the boxes into the four corners.<br>
+        2. Try moving all the boxes into the center of the map.</p>
+        <form class="keyPad" method="post" > 
             <div id="keyPad">
                 <div class="gameUp"><input type="submit" name="' . self::$upArrow . '" value="Up" /></div><br>
                 <div class="gameLeft"><input type="submit" name="' . self::$leftArrow . '" value="Left" /></div>
                 <div class="gameDown"><input type="submit" name="' . self::$downArrow . '" value="Down" /></div>
                 <div class="gameRight"><input type="submit" name="' . self::$rightArrow . '" value="Right" /></div>
             </div>
+            <div class="reset"><input type="submit" name="' . self::$reset . '" value="Reset" /></div><br>
         </form>
-        <p>Control the character with the keys above.</p>
-        <div id="content" class="content">';
+        <div id="content" class="content">
+        ';
 
         for($i = 0; $i < count($tiles); $i++) {
             $html .= $tiles[$i];
