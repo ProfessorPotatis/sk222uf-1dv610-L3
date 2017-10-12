@@ -11,26 +11,26 @@ On public server here: http://professorpotatis.000webhostapp.com/index.php
 4. Start the MAMP/WAMP/LAMP.
 5. Go to the MAMP/WAMP/LAMP phpMyAdmin and create a mySQL database:
 
-### Create a mySQL database
-Add table namned Users.  
-The table should contain three columns.  
-First column: username, varchar(20), utf8mb4_unicode_ci.  
-Second column: password, varchar(255), utf8mb4_unicode_ci.  
-Third column: cookie, varchar(255), utf8mb4_unicode_ci.
+    ### Create a mySQL database
+    Add table namned Users.  
+    The table should contain three columns.  
+    First column: username, varchar(20), utf8mb4_unicode_ci.  
+    Second column: password, varchar(255), utf8mb4_unicode_ci.  
+    Third column: cookie, varchar(255), utf8mb4_unicode_ci.
 
 6. In your MAMP/WAMP/LAMP folder htdocs, go to the model folder.
 7. Create a DBConfig.php file and save it to the model folder:
 
-### Create a DBConfig.php file
-Add the information for your mySQL database.  
-```php
-<?php
+    ### Create a DBConfig.php file
+    Add the information for your mySQL database.  
+    ```php
+    <?php
 
-$db_host = 'localhost';
-$db_user = 'username';
-$db_password = 'password';
-$db_name = 'dbname';
-```
+    $db_host = 'localhost';
+    $db_user = 'username';
+    $db_password = 'password';
+    $db_name = 'dbname';
+    ```
 
 8. In your browser, go to localhost:8888/sk222uf-1dv610-L3/index.php.
 9. DONE!
