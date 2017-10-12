@@ -67,7 +67,7 @@ class LoginView {
 	*/
 	private function generateLoginFormHTML($message) {
 
-		$this->username = $this->getRequestUserName();
+		$this->username = $this->getUserName();
 
 		return '
 			<form method="post" > 
@@ -90,7 +90,7 @@ class LoginView {
 		';
 	}
 	
-	private function getRequestUserName() {
+	private function getUserName() {
 		$username;
 
 		$providedLoginUsername = $this->loginController->getUsername();
@@ -106,5 +106,33 @@ class LoginView {
 		}
 
 		return $username;
+	}
+
+	public function getRequestUserName() {
+		return self::$name;
+	}
+
+	public function getRequestPassword() {
+		return self::$password;
+	}
+
+	public function getRequestLogout() {
+		return self::$logout;
+	}
+
+	public function getRequestLogin() {
+		return self::$login;
+	}
+
+	public function getRequestKeep() {
+		return self::$keep;
+	}
+
+	public function getRequestCookieName() {
+		return self::$cookieName;
+	}
+
+	public function getRequestCookiePassword() {
+		return self::$cookiePassword;
 	}
 }

@@ -1,5 +1,4 @@
 <?php
-//session_start();
 
 class RegisterView {
 	private static $registerName = 'RegisterView::UserName';
@@ -40,7 +39,7 @@ class RegisterView {
 	
 	private function generateRegisterFormHTML($message) {
 
-        $this->registerUsername = $this->getRequestUserName();
+        $this->registerUsername = $this->getUsername();
 
 		return '
 		<h2>Register new user</h2>
@@ -64,7 +63,22 @@ class RegisterView {
 	';
 	}
 	
-	private function getRequestUserName() {
+	private function getUsername() {
 		return $this->registerController->getUsername();
+	}
+
+	public function getRequestUserName() {
+		return self::$registerName;
+	}
+
+	public function getRequestPassword() {
+		return self::$registerPassword;
+	}
+	public function getRequestRepeatPassword() {
+		return self::$repeatPassword;
+	}
+
+	public function getRequestRegister() {
+		return self::$register;
 	}
 }

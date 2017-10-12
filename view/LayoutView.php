@@ -1,7 +1,6 @@
 <?php
 
 class LayoutView {
-
     private $get;
     
     public function render($isLoggedIn, $v, DateTimeView $dtv) {
@@ -17,7 +16,7 @@ class LayoutView {
           <body>
             <h1>Assignment 2</h1>
             ' . $this->renderRegisterLink($isLoggedIn) . '
-            ' . $this->renderGamesLink($isLoggedIn) . '
+            ' . $this->renderGameLink($isLoggedIn) . '
             ' . $this->renderIsLoggedIn($isLoggedIn) . '
             
             <div class="container">
@@ -51,11 +50,11 @@ class LayoutView {
       }
     }
 
-    private function renderGamesLink($isLoggedIn) {
+    private function renderGameLink($isLoggedIn) {
       if ($isLoggedIn && $this->get->getVariableIsSet('games')) {
-        return '<a href="?">Back to login</a>';
+        return '<a href="?">Back to logged in page</a>';
       } else if ($isLoggedIn) {
-        return '<a href="?games">Play games</a>';
+        return '<a href="?games">Play game</a>';
       } else {
         return;
       }
