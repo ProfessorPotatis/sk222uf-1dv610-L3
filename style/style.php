@@ -63,7 +63,6 @@
 	height: 320px;
 	width: 320px;
 	margin-top: 20px;
-    border: 1px solid #73AD21;
 }
 
 #dino {
