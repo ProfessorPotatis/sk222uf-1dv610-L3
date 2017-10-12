@@ -4,15 +4,25 @@ Estimated score on assignment: 100%
 According to the auto tests: http://csquiz.lnu.se:25083/index.php  
 On public server here: http://professorpotatis.000webhostapp.com/index.php
 
-## Create a mySQL database
+## Installation
+1. Download and install a MAMP, WAMP or LAMP.
+2. Download the repository.
+3. Put the repository in your MAMP/WAMP/LAMP folder htdocs.
+4. Start the MAMP/WAMP/LAMP.
+5. Go to the MAMP/WAMP/LAMP phpMyAdmin and create a mySQL database:
+
+### Create a mySQL database
 Add table namned Users.  
 The table should contain three columns.  
 First column: username, varchar(20), utf8mb4_unicode_ci.  
 Second column: password, varchar(255), utf8mb4_unicode_ci.  
 Third column: cookie, varchar(255), utf8mb4_unicode_ci.
 
-## Create a DBConfig.php file
-Save in model folder. Add the information for your mySQL database.  
+6. In your MAMP/WAMP/LAMP folder htdocs, go to the model folder.
+7. Create a DBConfig.php file and save it to the model folder:
+
+### Create a DBConfig.php file
+Add the information for your mySQL database.  
 ```php
 <?php
 
@@ -21,6 +31,9 @@ $db_user = 'username';
 $db_password = 'password';
 $db_name = 'dbname';
 ```
+
+8. In your browser, go to localhost:8888/sk222uf-1dv610-L3/index.php.
+9. DONE!
 
 # Extra functionality
 A game that I have named "Dinosaur Move Boxes".
