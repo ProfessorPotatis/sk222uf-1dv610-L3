@@ -1,5 +1,8 @@
 # Login_1DV610
-Interface repository for 1DV610 assignment 2.
+Interface repository for 1DV610 assignment L3. Requirements and Code Quality.  
+Estimated score on assignment: 100%  
+According to the auto tests: http://csquiz.lnu.se:25083/index.php  
+On public server here: http://professorpotatis.000webhostapp.com/index.php
 
 ## Create a mySQL database
 Add table namned Users.  
@@ -18,6 +21,9 @@ $db_user = 'username';
 $db_password = 'password';
 $db_name = 'dbname';
 ```
+
+# Extra functionality
+A game that I have named "Dinosaur Move Boxes".
 
 ## Play "Dinosaur Move Boxes"
 When logged in to the system:  
