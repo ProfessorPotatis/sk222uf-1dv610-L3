@@ -144,7 +144,7 @@ When user wants to play a game, a game area should be shown.
 * Dinosaur moves one tile to the left.
 * Dinosaur is faced to the left.
 
-![After Input](images/showGameArea.png)
+![After Input](images/dinosaurLeft.png)
 
 ***
 
