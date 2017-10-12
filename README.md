@@ -18,3 +18,8 @@ $db_user = 'username';
 $db_password = 'password';
 $db_name = 'dbname';
 ```
+
+## Play "Dinosaur Move Boxes"
+When logged in to the system:  
+1. Click link "Play game".
+2. Follow the instructions on the page.
