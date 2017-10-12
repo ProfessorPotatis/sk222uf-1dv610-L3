@@ -2,15 +2,15 @@
 
 class RegisterController {
 
-    private static $registerName = 'RegisterView::UserName';
-	private static $registerPassword = 'RegisterView::Password';
-	private static $register = 'RegisterView::Register';
-
     private $db;
     private $session;
-    private $post;
     private $request;
     private $validator;
+    private $registerView;
+
+    private $requestUsername;
+    private $requestPassword;
+    private $requestRegister;
 
     private $username;
     private $password;
@@ -22,9 +22,13 @@ class RegisterController {
 
         $this->db = new Database($db_host, $db_user, $db_password, $db_name);
         $this->session = new Session();
-        $this->post = new Post();
         $this->request = new Request();
         $this->validator = new FormValidator();
+        $this->registerView = new RegisterView();
+
+        $this->requestUsername = $this->registerView->getRequestUserName();
+        $this->requestPassword = $this->registerView->getRequestPassword();
+        $this->requestRegister = $this->registerView->getRequestRegister();
     }
 
     public function handleUserRequest() {
@@ -50,14 +54,14 @@ class RegisterController {
     }
 
     private function handleRegisterRequest() {
-        $registerIsSet = $this->post->postVariableIsSet(self::$register);
+        $registerIsSet = $this->request->requestVariableIsSet($this->requestRegister);
 
         if ($registerIsSet) {
             $inputIsValid = $this->validator->validateInputFields();
 
             if ($inputIsValid) {
-                $newUsername = $this->request->getRequestVariable(self::$registerName);
-                $newPassword = $this->request->getRequestVariable(self::$registerPassword);
+                $newUsername = $this->request->getRequestVariable($this->requestUsername);
+                $newPassword = $this->request->getRequestVariable($this->requestPassword);
 
                 $userExist = $this->db->checkIfUserExist($newUsername);
 

@@ -5,30 +5,35 @@ class RouteController {
     private $dateTimeView;
     private $loginView;
     private $registerView;
+    private $gameView;
 
     private $session;
     private $server;
     private $get;
     private $cookie;
 
+    private $requestCookiePassword;
+
     public function __construct() {
         $this->layoutView = new LayoutView();
-        $this->dateTimeView = new dateTimeView();
+        $this->dateTimeView = new DateTimeView();
         $this->loginView = new LoginView();
         $this->registerView = new RegisterView();
-        $this->gamesView = new GamesView();
+        $this->gameView = new GameView();
 
         $this->session = new Session();
         $this->server = new Server();
         $this->get = new Get();
         $this->cookie = new Cookie();
+
+        $this->requestCookiePassword = $this->loginView->getRequestCookiePassword();
     }
 
     public function route() {
         if ($this->session->isLoggedIn()) {
-            if ($this->userWantsToPlayGames()) {
+            if ($this->userWantsToPlayGame()) {
                 $isLoggedIn = true;
-                $this->renderGamesPage($isLoggedIn);
+                $this->renderGamePage($isLoggedIn);
             } else {
                 $isLoggedIn = $this->notHijacked();
                 $this->renderLoginPage($isLoggedIn);
@@ -43,6 +48,14 @@ class RouteController {
             $isLoggedIn = false;
             $this->renderLoginPage($isLoggedIn);
         }
+    }
+
+    private function userWantsToPlayGame() {
+        return $this->get->getVariableIsSet('games');
+    }
+
+    private function renderGamePage($isLoggedIn) {
+        $this->layoutView->render($isLoggedIn, $this->gameView, $this->dateTimeView);
     }
 
     private function notHijacked() {
@@ -74,20 +87,12 @@ class RouteController {
     }
 
     private function userHasCookies() {
-        $cookiePasswordIsSet = $this->cookie->cookieIsSet('LoginView::CookiePassword');
-        $cookiePassword = $this->cookie->getCookieVariable('LoginView::CookiePassword');
+        $cookiePasswordIsSet = $this->cookie->cookieIsSet($this->requestCookiePassword);
+        $cookiePassword = $this->cookie->getCookieVariable($this->requestCookiePassword);
 
         if ($cookiePasswordIsSet && !empty($cookiePassword)) {
             return true;
         }
         return false;
-    }
-
-    private function userWantsToPlayGames() {
-        return $this->get->getVariableIsSet('games');
-    }
-
-    private function renderGamesPage($isLoggedIn) {
-        $this->layoutView->render($isLoggedIn, $this->gamesView, $this->dateTimeView);
     }
 }

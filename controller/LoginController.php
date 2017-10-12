@@ -2,20 +2,19 @@
 
 class LoginController {
 
-    private static $providedUsername = 'LoginView::UserName';
-    private static $providedPassword = 'LoginView::Password';
-    private static $logout = 'LoginView::Logout';
-    private static $login = 'LoginView::Login';
-    private static $keep = 'LoginView::KeepMeLoggedIn';
-    private static $cookieName = 'LoginView::CookieName';
-	private static $cookiePassword = 'LoginView::CookiePassword';
-
     private $db;
     private $session;
     private $cookie;
-    private $post;
     private $request;
     private $server;
+    private $loginView;
+    private $requestUsername;
+    private $requestPassword;
+    private $requestLogout;
+    private $requestLogin;
+    private $requestKeep;
+    private $requestCookieName;
+    private $requestCookiePassword;
 
     private $message = '';
     private $username;
@@ -27,9 +26,17 @@ class LoginController {
         $this->db = new Database($db_host, $db_user, $db_password, $db_name);
         $this->session = new Session();
         $this->cookie = new Cookie();
-        $this->post = new Post();
         $this->request = new Request();
         $this->server = new Server();
+        $this->loginView = new LoginView();
+
+        $this->requestUsername = $this->loginView->getRequestUserName();
+        $this->requestPassword = $this->loginView->getRequestPassword();
+        $this->requestLogout = $this->loginView->getRequestLogout();
+        $this->requestLogin = $this->loginView->getRequestLogin();
+        $this->requestKeep = $this->loginView->getRequestKeep();
+        $this->requestCookieName = $this->loginView->getRequestCookieName();
+        $this->requestCookiePassword = $this->loginView->getRequestCookiePassword();
     }
 
     public function getMessage() {
@@ -52,9 +59,9 @@ class LoginController {
                 $this->username = $this->session->getSessionVariable('username');
                 $this->session->unsetSessionVariable('username');
             }
-        } else if ($this->cookie->cookieIsSet(self::$cookiePassword) && $this->session->isLoggedIn() == false) {
-            $cookieUsername = $this->cookie->getCookieVariable(self::$cookieName);
-            $cookiePw = $this->cookie->getCookieVariable(self::$cookiePassword);
+        } else if ($this->cookie->cookieIsSet($this->requestCookiePassword) && $this->session->isLoggedIn() == false) {
+            $cookieUsername = $this->cookie->getCookieVariable($this->requestCookieName);
+            $cookiePw = $this->cookie->getCookieVariable($this->requestCookiePassword);
 
             if ($this->db->verifyCookie($cookieUsername, $cookiePw)) {
                 $this->session->setSessionVariable('message', 'Welcome back with cookie');
@@ -73,10 +80,10 @@ class LoginController {
     }
 
     private function handleLoginRequest() {
-        if ($this->post->postVariableIsSet(self::$logout)) {
+        if ($this->request->requestVariableIsSet($this->requestLogout)) {
             $this->logout();
-        } else if ($this->post->postVariableIsSet(self::$login) && $this->session->isLoggedIn() == false) {
-            $postedUsername = $this->post->getPostVariable(self::$providedUsername);
+        } else if ($this->request->requestVariableIsSet($this->requestLogin) && $this->session->isLoggedIn() == false) {
+            $postedUsername = $this->request->getRequestVariable($this->requestUsername);
             $this->session->setSessionVariable('username', $postedUsername);
             $this->username = $this->session->getSessionVariable('username');
             $this->validateInputFields();
@@ -85,9 +92,37 @@ class LoginController {
         }
     }
 
+    private function logout() {
+        if ($this->session->isLoggedIn()) {
+            $this->clearCookies();
+            $this->session->unsetSessionVariable('loggedIn');
+            $this->session->setSessionVariable('message', 'Bye bye!');
+        } else {
+            $this->message = '';
+        }
+    }
+
+    private function clearCookies() {
+        $userCookieIsSet = $this->cookie->cookieIsSet($this->requestCookieName);
+        $userCookie = $this->cookie->getCookieVariable($this->requestCookieName);
+
+        $passwordCookieIsSet = $this->cookie->cookieIsSet($this->requestCookiePassword);
+        $passwordCookie = $this->cookie->getCookieVariable($this->requestCookiePassword);
+
+        if ($userCookieIsSet) {
+            $this->cookie->unsetCookieVariable($userCookie);
+            setcookie($this->requestCookieName, '', time() - 3600, '/'); // empty value and old timestamp, to delete cookie
+        }
+
+        if ($passwordCookieIsSet) {
+            $this->cookie->unsetCookieVariable($passwordCookie);
+            setcookie($this->requestCookiePassword, '', time() - 3600, '/'); // empty value and old timestamp, to delete cookie
+        }
+    }
+
     private function validateInputFields() {
-        $postedUsername = $this->request->getRequestVariable(self::$providedUsername);
-        $postedPassword = $this->request->getRequestVariable(self::$providedPassword);
+        $postedUsername = $this->request->getRequestVariable($this->requestUsername);
+        $postedPassword = $this->request->getRequestVariable($this->requestPassword);
 
         if ($postedUsername == '') {
             $this->session->setSessionVariable('message', 'Username is missing');
@@ -100,8 +135,8 @@ class LoginController {
     }
 
     private function authenticateUser() {
-        $postedUsername = $this->request->getRequestVariable(self::$providedUsername);
-        $postedPassword = $this->request->getRequestVariable(self::$providedPassword);
+        $postedUsername = $this->request->getRequestVariable($this->requestUsername);
+        $postedPassword = $this->request->getRequestVariable($this->requestPassword);
 
         $this->isAuthenticated = $this->db->authenticate($postedUsername, $postedPassword);
 
@@ -121,57 +156,29 @@ class LoginController {
     }
 
     private function keepLoggedIn() {
-        if ($this->post->postVariableIsSet(self::$keep)) {
+        if ($this->request->requestVariableIsSet($this->requestKeep)) {
             $this->session->setSessionVariable('message', 'Welcome and you will be remembered');
             $this->setCookies();
         }
     }
 
     private function setCookies() {
-        $postedUsername = $this->request->getRequestVariable(self::$providedUsername);
+        $postedUsername = $this->request->getRequestVariable($this->requestUsername);
         $randomStr = uniqid();
 
-        $this->cookie->setCookieVariable(self::$cookieName, $postedUsername);
-        $this->cookie->setCookieVariable(self::$cookiePassword, $randomStr);
+        $this->cookie->setCookieVariable($this->requestCookieName, $postedUsername);
+        $this->cookie->setCookieVariable($this->requestCookiePassword, $randomStr);
 
         $this->saveCookiesToDatabase($randomStr);
     }
 
     private function saveCookiesToDatabase($randomStr) {
-        $postedUsername = $this->request->getRequestVariable(self::$providedUsername);
+        $postedUsername = $this->request->getRequestVariable($this->requestUsername);
 
         $this->db->saveUserCookie($postedUsername, $randomStr);
     }
 
     private function redirectToSelf() {
         header('Location: ' . $_SERVER['PHP_SELF']);
-    }
-
-    private function logout() {
-        if ($this->session->isLoggedIn()) {
-            $this->clearCookies();
-            $this->session->unsetSessionVariable('loggedIn');
-            $this->session->setSessionVariable('message', 'Bye bye!');
-        } else {
-            $this->message = '';
-        }
-    }
-
-    private function clearCookies() {
-        $userCookieIsSet = $this->cookie->cookieIsSet(self::$cookieName);
-        $userCookie = $this->cookie->getCookieVariable(self::$cookieName);
-
-        $passwordCookieIsSet = $this->cookie->cookieIsSet(self::$cookiePassword);
-        $passwordCookie = $this->cookie->getCookieVariable(self::$cookiePassword);
-
-        if ($userCookieIsSet) {
-            $this->cookie->unsetCookieVariable($userCookie);
-            setcookie(self::$cookieName, '', time() - 3600, '/'); // empty value and old timestamp, to delete cookie
-        }
-
-        if ($passwordCookieIsSet) {
-            $this->cookie->unsetCookieVariable($passwordCookie);
-            setcookie(self::$cookiePassword, '', time() - 3600, '/'); // empty value and old timestamp, to delete cookie
-        }
     }
 }

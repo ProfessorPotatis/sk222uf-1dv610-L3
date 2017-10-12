@@ -1,15 +1,15 @@
 <?php
 
 class FormValidator {
-
-    private static $registerName = 'RegisterView::UserName';
-	private static $registerPassword = 'RegisterView::Password';
-	private static $registerRepeatPassword = 'RegisterView::PasswordRepeat';
-	private static $registerMessage = 'RegisterView::Message';
-    private static $register = 'RegisterView::Register';
     
     private $session;
     private $request;
+    private $registerView;
+    
+    private $requestUsername;
+    private $requestPassword;
+    private $requestRegister;
+    
     private $username;
     private $password;
     private $repeatPassword;
@@ -18,12 +18,17 @@ class FormValidator {
     public function __construct() {
         $this->session = new Session();
         $this->request = new Request();
+        $this->registerView = new RegisterView();
+
+        $this->requestUsername = $this->registerView->getRequestUserName();
+        $this->requestPassword = $this->registerView->getRequestPassword();
+        $this->requestRepeatPassword = $this->registerView->getRequestRepeatPassword();
     }
 
     public function validateInputFields() {
-        $this->username = $this->request->getRequestVariable(self::$registerName);
-        $this->password = $this->request->getRequestVariable(self::$registerPassword);
-        $this->repeatPassword = $this->request->getRequestVariable(self::$registerRepeatPassword);
+        $this->username = $this->request->getRequestVariable($this->requestUsername);
+        $this->password = $this->request->getRequestVariable($this->requestPassword);
+        $this->repeatPassword = $this->request->getRequestVariable($this->requestRepeatPassword);
 
         $this->checkPasswordLength();
         $this->checkUsernameLength();
