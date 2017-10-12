@@ -55,7 +55,7 @@ A user is authenticated. Ex. UC1, UC3.
 ### UC6 Continue to play a game
 #### Preconditions
 A user is authenticated. Ex. UC1, UC3.  
-A user has started to play a game. Ex. UC5.
+A user has previously started to play a game. Ex. UC5.
 #### Main scenario
 1. Starts when a user wants to continue to play a game.
 2. The system present a play game choice.
@@ -65,7 +65,7 @@ A user has started to play a game. Ex. UC5.
 ### UC7 Reset a game
 #### Preconditions
 A user is authenticated. Ex. UC1, UC3.  
-A user has started to play a game. Ex. UC5, UC6.
+A user has previously started to play a game. Ex. UC5, UC6.
 #### Main scenario
 1. Starts when a user wants to reset the game.
 2. The system present a reset game choice.
