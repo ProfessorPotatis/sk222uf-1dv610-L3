@@ -1,8 +1,8 @@
 <?php
 
 class DinoGame {
-    private $gdb;
-    
+    private $session;
+
     private $tileSize; // Size of each tile
     private $gridSize; // Number of tiles per row
     private $left;
@@ -15,9 +15,7 @@ class DinoGame {
     private $movable = false;
 
     public function __construct() {
-        require($_SERVER['DOCUMENT_ROOT'] . '/sk222uf-1dv610-L3/model/DBConfigGame.php');
-        
-        $this->gdb = new GameDatabase($db_host, $db_user, $db_password, $db_name);
+        $this->session = new Session();
 
         $this->tileSize = 32;
         $this->gridSize = 10;
@@ -29,18 +27,18 @@ class DinoGame {
         $this->posTop = 0;
     }
 
+    public function getGameMap() {
+        return $this->gameMap;
+    }
+
     public function startGame() {
         $this->generateGameMap();
         $this->placeDinoOnMap();
     }
 
-    public function getGameMap() {
-        return $this->gameMap;
-    }
-
     private function generateGameMap() {
-        if (isset($_SESSION['gameMap'])) {
-            $this->gameMap = $_SESSION['gameMap'];
+        if ($this->session->sessionVariableIsSet('gameMap')) {
+            $this->gameMap = $this->session->getSessionVariable('gameMap');
         } else {
             $map = array(
                 11,11,11,11,11,11,11,11,11,11,
@@ -54,36 +52,50 @@ class DinoGame {
                 11,10,10,10,13,10,10,10,10,11,
                 11,11,11,11,11,11,11,11,11,11);
 
-            $_SESSION['gameMap'] = $map;
-
             $this->gameMap = $map;
+
+            $this->session->setSessionVariable('gameMap', $map);
         }
         
         return $this->gameMap;
     }
 
     private function placeDinoOnMap() {
-        if ($this->gdb->checkIfUserExist($_REQUEST['PHPSESSID'])) {
+        if ($this->playerIsSet()) {
             $this->moveDino(0, 0);
         } else {
             $this->moveDino(1, 1);
+
+            $this->setPlayer();
+            $this->setPosition(32, 32);
         }
     }
 
-    public function dinoPositionLeft() {
-        if ($this->gdb->checkIfUserExist($_REQUEST['PHPSESSID'])) {
-            $positionArray = $this->gdb->getCurrentDinoPosition($_REQUEST['PHPSESSID']);
-            $this->left = $positionArray[0];
-        }
-        return $this->left;
+    private function playerIsSet() {
+        return $this->session->sessionVariableIsSet('player');
     }
 
-    public function dinoPositionTop() {
-        if ($this->gdb->checkIfUserExist($_REQUEST['PHPSESSID'])) {
-            $positionArray = $this->gdb->getCurrentDinoPosition($_REQUEST['PHPSESSID']);
-            $this->top = $positionArray[1];
+    private function setPlayer() {
+        $player = $this->cookie->getCookieVariable('PHPSESSID');
+        $this->session->setSessionVariable('player', $player);
+    }
+
+    private function setPosition($x, $y) {
+        $this->session->setSessionVariable('dinoPosLeft', $x);
+        $this->session->setSessionVariable('dinoPosTop', $y);
+    }
+
+    public function dinoPosition() {
+        if ($this->playerIsSet()) {
+            $this->left = $this->getPosition('dinoPosLeft');
+            $this->top = $this->getPosition('dinoPosTop');
         }
-        return $this->top;
+        $dinoPosition = array($this->left, $this->top);
+        return $dinoPosition;
+    }
+
+    private function getPosition($variable) {
+        return $this->session->getSessionVariable($variable);
     }
 
     public function dinoFacingDirection() {
@@ -133,35 +145,24 @@ class DinoGame {
             case 10: // grass
             case 13: // door
             case 14: // sand
-                // Move dino to tile
                 $this->movable = true;
                 break;
-            case 11:
-                // Wall, don't move dino
+            case 11: // wall
                 break;
-            case 12:
-                // Tile was a box, move it and then dino
-                $nextPos;
-                $nextTile;
-
-                // Calculate where the sibling tile to be checked is in the array
+            case 12: // box
                 $nextPos = $tilePos + $moveLeft + ($this->gridSize*$moveTop);
-
-                // Get the next tile from gameMap and place it in the variable nextTile
                 $nextTile = $this->gameMap[$nextPos];
 
-                // Only move if the sibling tile to be moved to is empty
-                if($nextTile == 10) {
+                // Only move if the sibling tile to be moved to is grass
+                if ($nextTile == 10) {
                     $this->moveTile($tilePos, $nextPos);
                     // Allow dino to move to the current tile
                     $this->movable = true;
-                } else {
-                    // if not empty - don't do anything else
                 }
                 break;
             default:
-                // Tile was impassible - collided, do not move dino
                 $this->movable = false;
+                break;
         }
 
         return $this->movable;
@@ -171,22 +172,21 @@ class DinoGame {
         $boxTile = $this->gameMap[$current];
 
         // Switch the tiles
-        // Place tile into the next positon in the array gameMap
-        // Then make sure the current tile is grass in the array gameMap
+        // Place the box tile into the next positon in the array gameMap
+        // Place the grass tile in the box tile previous place in the array gameMap
         $this->gameMap[$next] = $boxTile;
         $this->gameMap[$current] = 10;
 
-        $_SESSION['gameMap'] = $this->gameMap;
+        $this->session->setSessionVariable('gameMap', $this->gameMap);
     }
 
     private function moveDino($x, $y) {
 		$this->posLeft = $x;
         $this->posTop = $y;
         
-        if ($this->gdb->checkIfUserExist($_REQUEST['PHPSESSID'])) {
-            $positionArray = $this->gdb->getCurrentDinoPosition($_REQUEST['PHPSESSID']);
-            $currentLeftPosition = $positionArray[0];
-            $currentTopPosition = $positionArray[1];
+        if ($this->playerIsSet()) {
+            $currentLeftPosition = $this->getPosition('dinoPosLeft');
+            $currentTopPosition = $this->getPosition('dinoPosTop');
     
             $this->left = $currentLeftPosition + ($this->posLeft*$this->tileSize);
             $this->top = $currentTopPosition + ($this->posTop*$this->tileSize);
@@ -199,11 +199,7 @@ class DinoGame {
     }
 
     private function updateDinoPosition() {
-        if ($this->gdb->checkIfUserExist($_REQUEST['PHPSESSID'])) {
-            $this->gdb->updateDinoPosition($_REQUEST['PHPSESSID'], $this->left, $this->top);
-        } else {
-            $this->gdb->addDinoPosition($_REQUEST['PHPSESSID'], $this->left, $this->top);
-        }
+        $this->setPosition($this->left, $this->top);
     }
 
     private function turnLeft() {
@@ -215,7 +211,7 @@ class DinoGame {
     }
 
     public function resetGame() {
-        unset($_SESSION['gameMap']);
-        $this->gdb->updateDinoPosition($_REQUEST['PHPSESSID'], 32, 32);
+        $this->session->unsetSessionVariable('gameMap');
+        $this->setPosition(32, 32);
     }
 }
