@@ -2,6 +2,7 @@
 
 class DinoGame {
     private $session;
+    private $cookie;
 
     private $tileSize; // Size of each tile
     private $gridSize; // Number of tiles per row
@@ -16,6 +17,7 @@ class DinoGame {
 
     public function __construct() {
         $this->session = new Session();
+        $this->cookie = new Cookie();
 
         $this->tileSize = 32;
         $this->gridSize = 10;
