@@ -48,6 +48,9 @@ class GameController {
             $this->dinoGame->resetGame();
             $this->redirectToSelf();
         }
+
+        $isPlayerWinner = $this->dinoGame->isPlayerWinner();
+        return $isPlayerWinner;
     }
 
     public function getDinoPosition() {

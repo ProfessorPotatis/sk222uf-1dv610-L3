@@ -12,6 +12,7 @@ class GameView {
     private $gamesController;
 
     private $gameMap;
+    private $playerWon;
 
 	/**
 	 * Create HTTP response
@@ -25,7 +26,7 @@ class GameView {
         $this->get = new Get();
 
         $this->gamesController = new GameController();
-        $this->gamesController->handleUserRequest();
+        $this->playerWon = $this->gamesController->handleUserRequest();
 
 		$gamesIsSet = $this->get->getVariableIsSet('games');
 
@@ -37,6 +38,7 @@ class GameView {
     }
 	
 	private function generateGamesHTML() {
+        $winnerMessage = $this->playerWon();
         $tiles = $this->getTiles();
 
         $dinoPosition = $this->gamesController->getDinoPosition();
@@ -48,6 +50,7 @@ class GameView {
         <p>Control the dinosaur with the keys and move the boxes around.<br>
         1. Try moving all the boxes into the four corners.<br>
         2. Try moving all the boxes into the center of the map.</p>
+        <p>' . $winnerMessage . '</p>
         <form class="keyPad" method="post" > 
             <div id="keyPad">
                 <div class="gameUp"><input type="submit" name="' . self::$upArrow . '" value="Up" /></div><br>
@@ -101,5 +104,17 @@ class GameView {
 
 	public function getRequestDownArrow() {
 		return self::$downArrow;
-	}
+    }
+    
+    public function playerWon() {
+        $message;
+
+        if ($this->playerWon) {
+            $message = 'Congratulations, you are a winner!';
+        } else {
+            $message = '';
+        }
+
+        return $message;
+    }
 }
