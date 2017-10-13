@@ -39,7 +39,6 @@ On public server here: http://professorpotatis.000webhostapp.com/index.php
 
 # Extra functionality
 A game that I have named "Dinosaur Move Boxes".  
-Not implemented: Winning message.
 
 ## Play "Dinosaur Move Boxes"
 When logged in to the system:  
@@ -84,6 +83,18 @@ A user has previously started to play a game. Ex. UC5, UC6.
 2. The system present a reset game choice.
 3. User tells the system he/she wants to reset the game.
 4. The system present a reset game.
+
+***
+
+### UC8 Win a game
+#### Preconditions
+A user is authenticated. Ex. UC1, UC3.  
+A user has previously started to play a game. Ex. UC5, UC6.
+#### Main scenario
+1. Starts when a user wants to win the game.
+2. The system present a game with instructions how to win.
+3. User plays the game according to the instructions.
+4. The system present a winner message.
 
 ***
 
@@ -213,3 +224,25 @@ When user wants to play a game, a game area should be shown.
 * The game is reset.
 
 ![After Input](images/showGameArea.png)
+
+***
+
+### Test case 8.1, Win a game (corners)
+#### Input:
+* Test case 5.1
+* Push boxes into the four corners.
+#### Output:
+* A message "Congratulations, you are a winner!" is shown.
+
+![After Input](images/winGameCorners.png)
+
+***
+
+### Test case 8.2, Win a game (center)
+#### Input:
+* Test case 5.1
+* Push boxes into the center.
+#### Output:
+* A message "Congratulations, you are a winner!" is shown.
+
+![After Input](images/winGameCenter.png)
