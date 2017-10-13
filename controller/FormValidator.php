@@ -25,7 +25,7 @@ class FormValidator {
         $this->requestRepeatPassword = $this->registerView->getRequestRepeatPassword();
     }
 
-    public function validateInputFields() {
+    public function validateInputFields() : bool {
         $this->username = $this->request->getRequestVariable($this->requestUsername);
         $this->password = $this->request->getRequestVariable($this->requestPassword);
         $this->repeatPassword = $this->request->getRequestVariable($this->requestRepeatPassword);

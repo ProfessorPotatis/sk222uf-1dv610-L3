@@ -39,7 +39,7 @@ class LoginController {
         $this->requestCookiePassword = $this->loginView->getRequestCookiePassword();
     }
 
-    public function getMessage() {
+    public function getMessage() : string {
         return $this->message;
     }
 
@@ -97,6 +97,7 @@ class LoginController {
             $this->clearCookies();
             $this->session->unsetSessionVariable('loggedIn');
             $this->session->setSessionVariable('message', 'Bye bye!');
+            $this->session->regenerateSessionId();
         } else {
             $this->message = '';
         }

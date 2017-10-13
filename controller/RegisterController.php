@@ -53,7 +53,7 @@ class RegisterController {
         }
     }
 
-    private function handleRegisterRequest() {
+    private function handleRegisterRequest() : bool {
         $registerIsSet = $this->request->requestVariableIsSet($this->requestRegister);
 
         if ($registerIsSet) {
@@ -81,7 +81,7 @@ class RegisterController {
         return false;
     }
 
-    public function getMessage() {
+    public function getMessage() : string {
         return $this->message;
     }
 

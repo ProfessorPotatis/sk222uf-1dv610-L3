@@ -50,15 +50,15 @@ class RouteController {
         }
     }
 
-    private function userWantsToPlayGame() {
+    private function userWantsToPlayGame() : bool {
         return $this->get->getVariableIsSet('games');
     }
 
-    private function renderGamePage($isLoggedIn) {
+    private function renderGamePage(bool $isLoggedIn) {
         $this->layoutView->render($isLoggedIn, $this->gameView, $this->dateTimeView);
     }
 
-    private function notHijacked() {
+    private function notHijacked() : bool {
         $stayLoggedIn;
 
         $userAgentIsSet = $this->session->sessionVariableIsSet('user_agent');
@@ -74,19 +74,19 @@ class RouteController {
         return $stayLoggedIn;
     }
 
-    private function renderLoginPage($isLoggedIn) {
+    private function renderLoginPage(bool $isLoggedIn) {
         $this->layoutView->render($isLoggedIn, $this->loginView, $this->dateTimeView);
     }
 
-    private function userWantsToRegister() {
+    private function userWantsToRegister() : bool {
         return $this->get->getVariableIsSet('register');
     }
 
-    private function renderRegisterPage($isLoggedIn) {
+    private function renderRegisterPage(bool $isLoggedIn) {
         $this->layoutView->render($isLoggedIn, $this->registerView, $this->dateTimeView);
     }
 
-    private function userHasCookies() {
+    private function userHasCookies() : bool {
         $cookiePasswordIsSet = $this->cookie->cookieIsSet($this->requestCookiePassword);
         $cookiePassword = $this->cookie->getCookieVariable($this->requestCookiePassword);
 

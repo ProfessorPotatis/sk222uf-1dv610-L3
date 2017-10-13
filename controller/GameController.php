@@ -30,12 +30,7 @@ class GameController {
         $this->request = new Request();
     }
 
-    public function getGameMap() {
-        $this->gameMap = $this->dinoGame->getGameMap();
-        return $this->gameMap;
-    }
-
-    public function handleUserRequest() {
+    public function handleUserRequest() : bool {
         if ($this->request->requestVariableIsSet($this->requestUpArrow)) {
             $this->dinoGame->dinoMovesUp();
         } else if ($this->request->requestVariableIsSet($this->requestLeftArrow)) {
@@ -53,6 +48,17 @@ class GameController {
         return $isPlayerWinner;
     }
 
+    /**
+    * @return gameMap[]
+    */
+    public function getGameMap() {
+        $this->gameMap = $this->dinoGame->getGameMap();
+        return $this->gameMap;
+    }
+
+    /**
+    * @return dinoPosition[]
+    */
     public function getDinoPosition() {
         $this->dinoPosition = $this->dinoGame->dinoPosition();
         return $this->dinoPosition;
