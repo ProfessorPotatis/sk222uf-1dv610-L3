@@ -73,6 +73,18 @@ class GameView {
         
         return $html;
     }
+
+    private function playerWon() {
+        $message;
+
+        if ($this->playerWon) {
+            $message = 'Congratulations, you are a winner!';
+        } else {
+            $message = '';
+        }
+
+        return $message;
+    }
     
     private function getTiles() {
         $gameMap = $this->gamesController->getGameMap();
@@ -104,17 +116,5 @@ class GameView {
 
 	public function getRequestDownArrow() {
 		return self::$downArrow;
-    }
-    
-    public function playerWon() {
-        $message;
-
-        if ($this->playerWon) {
-            $message = 'Congratulations, you are a winner!';
-        } else {
-            $message = '';
-        }
-
-        return $message;
     }
 }
