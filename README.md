@@ -221,6 +221,7 @@ When user wants to play a game, a game area should be shown.
 ### Test case 7.1, Reset a game
 #### Input:
 * Test case 5.7
+* Press "Reset"
 #### Output:
 * The game is reset.
 
