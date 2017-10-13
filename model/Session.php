@@ -19,25 +19,25 @@ class Session {
         session_regenerate_id();
     }
 
-    public function setSessionVariable($name, $value) {
+    public function setSessionVariable(string $name, $value) {
         $_SESSION[$name] = $value;
     }
 
-    public function getSessionVariable($sessionVariable) {
+    public function getSessionVariable(string $sessionVariable) {
         if ($this->sessionVariableIsSet($sessionVariable)) {
             return $_SESSION[$sessionVariable];
         }
     }
 
-    public function unsetSessionVariable($sessionVariable) {
+    public function unsetSessionVariable(string $sessionVariable) {
         unset($_SESSION[$sessionVariable]);
     }
 
-    public function sessionVariableIsSet($sessionVariable) {
+    public function sessionVariableIsSet(string $sessionVariable) : bool {
         return isset($_SESSION[$sessionVariable]);
     }
 
-    public function isLoggedIn() {
+    public function isLoggedIn() : bool {
         if ($this->sessionVariableIsSet(self::$loggedIn) && $this->getSessionVariable(self::$loggedIn)) {
             return true;
         } else {

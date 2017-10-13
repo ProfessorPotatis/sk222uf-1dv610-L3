@@ -3,7 +3,7 @@
 class LayoutView {
     private $get;
     
-    public function render($isLoggedIn, $v, DateTimeView $dtv) {
+    public function render(bool $isLoggedIn, $v, DateTimeView $dtv) {
       $this->get = new Get();
 
       echo '<!DOCTYPE html>
@@ -29,7 +29,7 @@ class LayoutView {
       ';
     }
     
-    private function renderIsLoggedIn($isLoggedIn) {
+    private function renderIsLoggedIn(bool $isLoggedIn) : string {
       if ($isLoggedIn) {
         return '<h2>Logged in</h2>';
       }
@@ -38,7 +38,7 @@ class LayoutView {
       }
     }
 
-    private function renderRegisterLink($isLoggedIn) {
+    private function renderRegisterLink(bool $isLoggedIn) {
       if ($isLoggedIn) {
         return;
       } else {
@@ -50,7 +50,7 @@ class LayoutView {
       }
     }
 
-    private function renderGameLink($isLoggedIn) {
+    private function renderGameLink(bool $isLoggedIn) {
       if ($isLoggedIn && $this->get->getVariableIsSet('games')) {
         return '<a href="?">Back to logged in page</a>';
       } else if ($isLoggedIn) {

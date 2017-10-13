@@ -2,7 +2,7 @@
 
 class DateTimeView {
 
-	public function show() {
+	public function show() : string {
 		date_default_timezone_set('Europe/Stockholm');
 
 		// Ex. Monday, the 11th of September 2017, The time is 08:44:37

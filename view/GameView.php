@@ -21,7 +21,7 @@ class GameView {
 	 *
 	 * @return  void BUT writes to standard output.
 	 */
-	public function response() {
+	public function response() : string {
 		$this->session = new Session();
         $this->get = new Get();
 
@@ -37,12 +37,11 @@ class GameView {
 		return $response;
     }
 	
-	private function generateGamesHTML() {
+	private function generateGamesHTML() : string {
         $winnerMessage = $this->playerWon();
         $tiles = $this->getTiles();
 
         $dinoPosition = $this->gamesController->getDinoPosition();
-
         $dinoFacingDirection = $this->gamesController->getDinoFacingDirection();
 
         $html = '
@@ -74,7 +73,7 @@ class GameView {
         return $html;
     }
 
-    private function playerWon() {
+    private function playerWon() : string {
         $message;
 
         if ($this->playerWon) {
@@ -86,6 +85,9 @@ class GameView {
         return $message;
     }
     
+    /**
+    * @return tiles[]
+    */
     private function getTiles() {
         $gameMap = $this->gamesController->getGameMap();
 
@@ -98,23 +100,23 @@ class GameView {
         return $tiles;
     }
 
-    public function getRequestReset() {
+    public function getRequestReset() : string {
 		return self::$reset;
 	}
 
-	public function getRequestLeftArrow() {
+	public function getRequestLeftArrow() : string {
 		return self::$leftArrow;
 	}
 
-	public function getRequestUpArrow() {
+	public function getRequestUpArrow() : string {
 		return self::$upArrow;
 	}
 
-	public function getRequestRightArrow() {
+	public function getRequestRightArrow() : string {
 		return self::$rightArrow;
 	}
 
-	public function getRequestDownArrow() {
+	public function getRequestDownArrow() : string {
 		return self::$downArrow;
     }
 }

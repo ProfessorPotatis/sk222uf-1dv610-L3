@@ -29,15 +29,52 @@ class DinoGame {
         $this->posTop = 0;
     }
 
-    public function getGameMap() {
-        return $this->gameMap;
-    }
-
     public function startGame() {
-        $this->generateGameMap();
         $this->placeDinoOnMap();
+        $this->generateGameMap();
     }
 
+    private function placeDinoOnMap() {
+        if ($this->playerIsSet() && $this->playerIsPreviousPlayer()) {
+            $this->moveDino(0, 0);
+        } else {
+            $this->resetGame();
+            $this->setPlayer();
+        }
+    }
+
+    private function playerIsSet() : bool {
+        return $this->session->sessionVariableIsSet('player');
+    }
+
+    private function playerIsPreviousPlayer() {
+        $currentPlayer = $this->cookie->getCookieVariable('PHPSESSID');
+        $previousPlayer = $this->session->getSessionVariable('player');
+
+        if ($currentPlayer == $previousPlayer) {
+            return true;
+        }
+        return false;
+    }
+
+    public function resetGame() {
+        $this->session->unsetSessionVariable('gameMap');
+        $this->setPosition(32, 32);
+    }
+
+    private function setPosition(int $x, int $y) {
+        $this->session->setSessionVariable('dinoPosLeft', $x);
+        $this->session->setSessionVariable('dinoPosTop', $y);
+    }
+
+    private function setPlayer() {
+        $player = $this->cookie->getCookieVariable('PHPSESSID');
+        $this->session->setSessionVariable('player', $player);
+    }
+
+    /**
+    * @return gameMap[]
+    */
     private function generateGameMap() {
         if ($this->session->sessionVariableIsSet('gameMap')) {
             $this->gameMap = $this->session->getSessionVariable('gameMap');
@@ -62,31 +99,9 @@ class DinoGame {
         return $this->gameMap;
     }
 
-    private function placeDinoOnMap() {
-        if ($this->playerIsSet()) {
-            $this->moveDino(0, 0);
-        } else {
-            $this->moveDino(1, 1);
-
-            $this->setPlayer();
-            $this->setPosition(32, 32);
-        }
-    }
-
-    private function playerIsSet() {
-        return $this->session->sessionVariableIsSet('player');
-    }
-
-    private function setPlayer() {
-        $player = $this->cookie->getCookieVariable('PHPSESSID');
-        $this->session->setSessionVariable('player', $player);
-    }
-
-    private function setPosition($x, $y) {
-        $this->session->setSessionVariable('dinoPosLeft', $x);
-        $this->session->setSessionVariable('dinoPosTop', $y);
-    }
-
+    /**
+    * @return dinoPosition[]
+    */
     public function dinoPosition() {
         if ($this->playerIsSet()) {
             $this->left = $this->getPosition('dinoPosLeft');
@@ -96,12 +111,8 @@ class DinoGame {
         return $dinoPosition;
     }
 
-    private function getPosition($variable) {
+    private function getPosition(string $variable) : int {
         return $this->session->getSessionVariable($variable);
-    }
-
-    public function dinoFacingDirection() {
-        return $this->dinoFacingDirection;
     }
 
     public function dinoMovesUp() {
@@ -130,7 +141,7 @@ class DinoGame {
         }
     }
 
-    private function isDinoMovable($moveLeft, $moveTop) {
+    private function isDinoMovable(int $moveLeft, int $moveTop) : bool {
         $tile;
         $tilePos;
         $newLeft;
@@ -170,7 +181,7 @@ class DinoGame {
         return $this->movable;
     }
 
-    private function moveTile($current, $next) {
+    private function moveTile(int $current, int $next) {
         $boxTile = $this->gameMap[$current];
 
         // Switch the tiles
@@ -212,12 +223,7 @@ class DinoGame {
         $this->dinoFacingDirection = 'right';
     }
 
-    public function resetGame() {
-        $this->session->unsetSessionVariable('gameMap');
-        $this->setPosition(32, 32);
-    }
-
-    public function isPlayerWinner() {
+    public function isPlayerWinner() : bool {
         $winnerMaps = $this->getWinnerMaps();
 
         if ($this->gameMap == $winnerMaps[0] || $this->gameMap == $winnerMaps[1]) {
@@ -227,6 +233,9 @@ class DinoGame {
         }
     }
 
+    /**
+    * @return winnerMaps[]
+    */
     private function getWinnerMaps() {
         $winnerMap1 = array(
             11,11,11,11,11,11,11,11,11,11,
@@ -255,5 +264,16 @@ class DinoGame {
         $winnerMaps = array($winnerMap1, $winnerMap2);
 
         return $winnerMaps;
+    }
+
+    /**
+    * @return gameMap[]
+    */
+    public function getGameMap() {
+        return $this->gameMap;
+    }
+
+    public function dinoFacingDirection() {
+        return $this->dinoFacingDirection;
     }
 }

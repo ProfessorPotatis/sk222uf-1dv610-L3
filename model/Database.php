@@ -11,7 +11,7 @@ class Database {
     private $usernameExist = false;
     private $cookieIsValid = false;
 
-    public function __construct($db_host, $db_user, $db_password, $db_name) {
+    public function __construct(string $db_host, string $db_user, string $db_password, string $db_name) {
         $this->db_host = $db_host;
         $this->db_user = $db_user;
         $this->db_password = $db_password;
@@ -36,7 +36,7 @@ class Database {
         mysqli_close($this->connection);
     }
 
-    public function addUser($newUsername, $newPassword) {
+    public function addUser(string $newUsername, string $newPassword) {
         $this->connectToDatabase();
 
         $hashPassword = password_hash($newPassword, PASSWORD_DEFAULT);
@@ -53,7 +53,7 @@ class Database {
         $this->disconnect();
     }
 
-    public function checkIfUserExist($username) {
+    public function checkIfUserExist(string $username) : bool {
         $this->connectToDatabase();
         
         // BINARY makes it case sensitive.
@@ -78,7 +78,7 @@ class Database {
         return $this->usernameExist;
     }
 
-    private function compareUsername($username, $dbUsername) {
+    private function compareUsername(string $username, string $dbUsername) : bool {
         if ($username == $dbUsername) {
             return true;
         } else {
@@ -86,7 +86,7 @@ class Database {
         }
     }
 
-    public function authenticate($username, $password) {
+    public function authenticate(string $username, string $password) : bool {
         $this->connectToDatabase();
 
         // BINARY makes it case sensitive.
@@ -111,7 +111,7 @@ class Database {
         return $this->passwordIsValid;
     }
 
-    private function verifyPassword($password, $dbPassword) {
+    private function verifyPassword(string $password, string $dbPassword) : bool {
         if (password_verify($password, $dbPassword)) {
             return true;
         } else {
@@ -119,7 +119,7 @@ class Database {
         }
     }
 
-    public function saveUserCookie($username, $cookiePassword) {
+    public function saveUserCookie(string $username, string $cookiePassword) {
         $this->connectToDatabase();
         
         $hashedCookiePassword = password_hash($cookiePassword, PASSWORD_DEFAULT);
@@ -135,7 +135,7 @@ class Database {
         $this->disconnect();
     }
 
-    public function verifyCookie($inputUsername, $inputCookie) {
+    public function verifyCookie(string $inputUsername, string $inputCookie) : bool {
         $this->connectToDatabase();
         
         // BINARY makes it case sensitive.
@@ -160,7 +160,7 @@ class Database {
         return $this->cookieIsValid;
     }
 
-    private function compareCookie($inputCookie, $dbCookiePassword) {
+    private function compareCookie(string $inputCookie, string $dbCookiePassword) : bool {
         if (password_verify($inputCookie, $dbCookiePassword)) {
             return true;
         } else {

@@ -23,7 +23,7 @@ class LoginView {
 	 *
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response() {
+	public function response() : string {
 		$this->session = new Session();
 
 		$this->loginController = new LoginController();
@@ -51,7 +51,7 @@ class LoginView {
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
-	private function generateLogoutButtonHTML($message) {
+	private function generateLogoutButtonHTML(string $message) : string {
 		return '
 			<form  method="post" >
 				<p id="' . self::$messageId . '">' . $message .'</p>
@@ -65,7 +65,7 @@ class LoginView {
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
-	private function generateLoginFormHTML($message) {
+	private function generateLoginFormHTML(string $message) : string {
 
 		$this->username = $this->getUserName();
 
@@ -90,7 +90,7 @@ class LoginView {
 		';
 	}
 	
-	private function getUserName() {
+	private function getUserName() : string {
 		$username;
 
 		$providedLoginUsername = $this->loginController->getUsername();
@@ -108,31 +108,31 @@ class LoginView {
 		return $username;
 	}
 
-	public function getRequestUserName() {
+	public function getRequestUserName() : string {
 		return self::$name;
 	}
 
-	public function getRequestPassword() {
+	public function getRequestPassword() : string {
 		return self::$password;
 	}
 
-	public function getRequestLogout() {
+	public function getRequestLogout() : string {
 		return self::$logout;
 	}
 
-	public function getRequestLogin() {
+	public function getRequestLogin() : string {
 		return self::$login;
 	}
 
-	public function getRequestKeep() {
+	public function getRequestKeep() : string {
 		return self::$keep;
 	}
 
-	public function getRequestCookieName() {
+	public function getRequestCookieName() : string {
 		return self::$cookieName;
 	}
 
-	public function getRequestCookiePassword() {
+	public function getRequestCookiePassword() : string {
 		return self::$cookiePassword;
 	}
 }

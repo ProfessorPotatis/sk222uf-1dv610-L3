@@ -20,7 +20,7 @@ class RegisterView {
 	 *
 	 * @return  void BUT writes to standard output.
 	 */
-	public function response() {
+	public function response() : string {
 		$this->session = new Session();
 		$this->get = new Get();
 
@@ -37,7 +37,7 @@ class RegisterView {
 		return $response;
 	}
 	
-	private function generateRegisterFormHTML($message) {
+	private function generateRegisterFormHTML(string $message) : string {
 
         $this->registerUsername = $this->getUsername();
 
@@ -67,18 +67,18 @@ class RegisterView {
 		return $this->registerController->getUsername();
 	}
 
-	public function getRequestUserName() {
+	public function getRequestUserName() : string {
 		return self::$registerName;
 	}
 
-	public function getRequestPassword() {
+	public function getRequestPassword() : string {
 		return self::$registerPassword;
 	}
-	public function getRequestRepeatPassword() {
+	public function getRequestRepeatPassword() : string {
 		return self::$repeatPassword;
 	}
 
-	public function getRequestRegister() {
+	public function getRequestRegister() : string {
 		return self::$register;
 	}
 }
