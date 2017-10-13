@@ -32,22 +32,14 @@ class RegisterController {
     }
 
     public function handleUserRequest() {
+        $thereIsAMessage = $this->session->sessionVariableIsSet('message');
+
         if ($_POST) {
             $successfullyRegistered = $this->handleRegisterRequest();
-            if ($successfullyRegistered) {
-                $this->username = $this->session->getSessionVariable('username');
-                $this->redirectToLogin();
-            } else {
-                $this->redirectToSelf();
-            }
-        } else if ($this->session->sessionVariableIsSet('message')) {
-            $this->message = $this->session->getSessionVariable('message');
-            $this->session->unsetSessionVariable('message');
-
-            if ($this->session->sessionVariableIsSet('username')) {
-                $this->username = $this->session->getSessionVariable('username');
-                $this->session->unsetSessionVariable('username');
-            }
+            $this->redirect($successfullyRegistered);
+        } else if ($thereIsAMessage) {
+            $this->setMessage();
+            $this->setUsername();
         } else {
             $this->message = '';
         }
@@ -57,28 +49,67 @@ class RegisterController {
         $registerIsSet = $this->request->requestVariableIsSet($this->requestRegister);
 
         if ($registerIsSet) {
-            $inputIsValid = $this->validator->validateInputFields();
-
-            if ($inputIsValid) {
-                $newUsername = $this->request->getRequestVariable($this->requestUsername);
-                $newPassword = $this->request->getRequestVariable($this->requestPassword);
-
-                $userExist = $this->db->checkIfUserExist($newUsername);
-
-                if ($userExist == false) {
-                    $this->db->addUser($newUsername, $newPassword);
-                    $this->session->setSessionVariable('username', $newUsername);
-                    $this->session->setSessionVariable('message', 'Registered new user.');
-                    return true;
-                } else {
-                    $this->session->setSessionVariable('username', $newUsername);
-                    $this->session->setSessionVariable('message', 'User exists, pick another username.');
-                }
-            }
+            $userRegistered = $this->registerUser();
+            return $userRegistered;
         } else {
             $this->message = '';
         }
         return false;
+    }
+
+    private function registerUser() : bool {
+        $inputIsValid = $this->validator->validateInputFields();
+
+        if ($inputIsValid) {
+            $newUsername = $this->request->getRequestVariable($this->requestUsername);
+            $newPassword = $this->request->getRequestVariable($this->requestPassword);
+
+            $userExist = $this->userExist($newUsername);
+    
+            if ($userExist == false) {
+                $this->db->addUser($newUsername, $newPassword);
+                $this->session->setSessionVariable('username', $newUsername);
+                $this->session->setSessionVariable('message', 'Registered new user.');
+                return true;
+            } else {
+                $this->session->setSessionVariable('username', $newUsername);
+                $this->session->setSessionVariable('message', 'User exists, pick another username.');
+            }
+        }
+        return false;
+    }
+
+    private function userExist(string $newUsername) : bool {
+        $userExist = $this->db->checkIfUserExist($newUsername);
+        return $userExist;
+    }
+
+    private function redirect(bool $successfullyRegistered) {
+        if ($successfullyRegistered) {
+            $this->redirectToLogin();
+        } else {
+            $this->redirectToSelf();
+        }
+    }
+
+    private function redirectToLogin() {
+        header('Location: ' . $_SERVER['PHP_SELF']);
+    }
+
+    private function redirectToSelf() {
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?register');
+    }
+
+    private function setMessage() {
+        $this->message = $this->session->getSessionVariable('message');
+        $this->session->unsetSessionVariable('message');
+    }
+
+    private function setUsername() {
+        if ($this->session->sessionVariableIsSet('username')) {
+            $this->username = $this->session->getSessionVariable('username');
+            $this->session->unsetSessionVariable('username');
+        }
     }
 
     public function getMessage() : string {
@@ -87,13 +118,5 @@ class RegisterController {
 
     public function getUsername() {
         return $this->username;
-    }
-
-    private function redirectToSelf() {
-        header('Location: ' . $_SERVER['PHP_SELF'] . '?register');
-    }
-
-    private function redirectToLogin() {
-        header('Location: ' . $_SERVER['PHP_SELF']);
     }
 }
