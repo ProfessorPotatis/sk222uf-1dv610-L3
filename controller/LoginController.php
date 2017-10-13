@@ -87,8 +87,7 @@ class LoginController {
         $userIsLoggedIn = $this->session->isLoggedIn();
 
         if ($userIsLoggedIn) {
-            $this->clearCookie($this->requestCookieName);
-            $this->clearCookie($this->requestCookiePassword);
+            $this->clearCookies();
 
             $this->session->unsetSessionVariable('loggedIn');
             $this->session->setSessionVariable('message', 'Bye bye!');
@@ -98,8 +97,9 @@ class LoginController {
         }
     }
 
-    private function clearCookie($cookie) {
-        $this->cookie->unsetCookieVariable($cookie);
+    private function clearCookies() {
+        $this->cookie->deleteCookie($this->requestCookieName);
+        $this->cookie->deleteCookie($this->requestCookiePassword);
     }
 
     private function validateInputFields() {
