@@ -31,15 +31,21 @@ class GameController {
     }
 
     public function handleUserRequest() : bool {
-        if ($this->request->requestVariableIsSet($this->requestUpArrow)) {
+        $userWantsToMoveUp = $this->request->requestVariableIsSet($this->requestUpArrow);
+        $userWantsToMoveLeft = $this->request->requestVariableIsSet($this->requestLeftArrow);
+        $userWantsToMoveDown = $this->request->requestVariableIsSet($this->requestDownArrow);
+        $userWantsToMoveRight = $this->request->requestVariableIsSet($this->requestRightArrow);
+        $userWantsToResetGame = $this->request->requestVariableIsSet($this->requestReset);
+
+        if ($userWantsToMoveUp) {
             $this->dinoGame->dinoMovesUp();
-        } else if ($this->request->requestVariableIsSet($this->requestLeftArrow)) {
+        } else if ($userWantsToMoveLeft) {
             $this->dinoGame->dinoMovesLeft();
-        } else if ($this->request->requestVariableIsSet($this->requestDownArrow)) {
+        } else if ($userWantsToMoveDown) {
             $this->dinoGame->dinoMovesDown();
-        } else if ($this->request->requestVariableIsSet($this->requestRightArrow)) {
+        } else if ($userWantsToMoveRight) {
             $this->dinoGame->dinoMovesRight();
-        } else if ($this->request->requestVariableIsSet($this->requestReset)) {
+        } else if ($userWantsToResetGame) {
             $this->dinoGame->resetGame();
             $this->redirectToSelf();
         }
