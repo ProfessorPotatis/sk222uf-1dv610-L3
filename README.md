@@ -7,9 +7,10 @@ On public server here: http://professorpotatis.000webhostapp.com/index.php
 ## Installation
 1. Download and install a MAMP, WAMP or LAMP.
 2. Download the repository.
-3. Put the repository in your MAMP/WAMP/LAMP folder htdocs.
-4. Start the MAMP/WAMP/LAMP.
-5. Go to the MAMP/WAMP/LAMP phpMyAdmin and create a mySQL database:
+3. Rename the repository to sk222uf-1dv610-L3.
+4. Put the repository in your MAMP/WAMP/LAMP folder htdocs.
+5. Start the MAMP/WAMP/LAMP.
+6. Go to the MAMP/WAMP/LAMP phpMyAdmin and create a mySQL database:
 
     ### Create a mySQL database
     Add table namned Users.  
@@ -18,8 +19,8 @@ On public server here: http://professorpotatis.000webhostapp.com/index.php
     Second column: password, varchar(255), utf8mb4_unicode_ci.  
     Third column: cookie, varchar(255), utf8mb4_unicode_ci.
 
-6. In your MAMP/WAMP/LAMP folder htdocs, go to the model folder.
-7. Create a DBConfig.php file and save it to the model folder:
+7. In your MAMP/WAMP/LAMP folder htdocs, go to the model folder.
+8. Create a DBConfig.php file and save it to the model folder:
 
     ### Create a DBConfig.php file
     Add the information for your mySQL database.  
@@ -32,8 +33,8 @@ On public server here: http://professorpotatis.000webhostapp.com/index.php
     $db_name = 'dbname';
     ```
 
-8. In your browser, go to localhost:8888/sk222uf-1dv610-L3/index.php.
-9. DONE!
+9. In your browser, go to localhost:8888/sk222uf-1dv610-L3/index.php.
+10. DONE!
 
 ***
 
