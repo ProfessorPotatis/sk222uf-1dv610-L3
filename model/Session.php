@@ -30,7 +30,9 @@ class Session {
     }
 
     public function unsetSessionVariable(string $sessionVariable) {
-        unset($_SESSION[$sessionVariable]);
+        if ($this->sessionVariableIsSet($sessionVariable)) {
+            unset($_SESSION[$sessionVariable]);
+        }
     }
 
     public function sessionVariableIsSet(string $sessionVariable) : bool {

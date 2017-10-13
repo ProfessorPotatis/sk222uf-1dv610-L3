@@ -57,14 +57,36 @@ class DinoGame {
         return false;
     }
 
-    public function resetGame() {
-        $this->session->unsetSessionVariable('gameMap');
-        $this->setPosition(32, 32);
+    private function moveDino($x, $y) {
+		$this->posLeft = $x;
+        $this->posTop = $y;
+        
+        if ($this->playerIsSet()) {
+            $currentLeftPosition = $this->getPosition('dinoPosLeft');
+            $currentTopPosition = $this->getPosition('dinoPosTop');
+    
+            $this->left = $currentLeftPosition + ($this->posLeft*$this->tileSize);
+            $this->top = $currentTopPosition + ($this->posTop*$this->tileSize);
+        } else {
+            $this->left = $this->posLeft*$this->tileSize;
+            $this->top = $this->posTop*$this->tileSize;
+        }
+        
+        $this->updateDinoPosition();
+    }
+
+    private function updateDinoPosition() {
+        $this->setPosition($this->left, $this->top);
     }
 
     private function setPosition(int $x, int $y) {
         $this->session->setSessionVariable('dinoPosLeft', $x);
         $this->session->setSessionVariable('dinoPosTop', $y);
+    }
+
+    public function resetGame() {
+        $this->session->unsetSessionVariable('gameMap');
+        $this->setPosition(32, 32);
     }
 
     private function setPlayer() {
@@ -191,28 +213,6 @@ class DinoGame {
         $this->gameMap[$current] = 10;
 
         $this->session->setSessionVariable('gameMap', $this->gameMap);
-    }
-
-    private function moveDino($x, $y) {
-		$this->posLeft = $x;
-        $this->posTop = $y;
-        
-        if ($this->playerIsSet()) {
-            $currentLeftPosition = $this->getPosition('dinoPosLeft');
-            $currentTopPosition = $this->getPosition('dinoPosTop');
-    
-            $this->left = $currentLeftPosition + ($this->posLeft*$this->tileSize);
-            $this->top = $currentTopPosition + ($this->posTop*$this->tileSize);
-        } else {
-            $this->left = $this->posLeft*$this->tileSize;
-            $this->top = $this->posTop*$this->tileSize;
-        }
-        
-        $this->updateDinoPosition();
-    }
-
-    private function updateDinoPosition() {
-        $this->setPosition($this->left, $this->top);
     }
 
     private function turnLeft() {

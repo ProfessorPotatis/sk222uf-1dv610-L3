@@ -28,15 +28,6 @@ class LayoutView {
         </html>
       ';
     }
-    
-    private function renderIsLoggedIn(bool $isLoggedIn) : string {
-      if ($isLoggedIn) {
-        return '<h2>Logged in</h2>';
-      }
-      else {
-        return '<h2>Not logged in</h2>';
-      }
-    }
 
     private function renderRegisterLink(bool $isLoggedIn) {
       if ($isLoggedIn) {
@@ -57,6 +48,15 @@ class LayoutView {
         return '<a href="?games">Play game</a>';
       } else {
         return;
+      }
+    }
+
+    private function renderIsLoggedIn(bool $isLoggedIn) : string {
+      if ($isLoggedIn) {
+        return '<h2>Logged in</h2>';
+      }
+      else {
+        return '<h2>Not logged in</h2>';
       }
     }
 }

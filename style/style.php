@@ -21,7 +21,7 @@
 	box-shadow: 3px 3px 3px #c9c9c9 inset;
 }
 
-#keyPad :hover {
+#keyPad :hover, .reset :hover {
 	background-color: rgb(111, 108, 108);
 	box-shadow: 3px 3px 3px #353535 inset;
 }
@@ -37,25 +37,12 @@
 	box-shadow: 3px 3px 3px #c9c9c9 inset;
 }
 
-.reset :hover {
-    background-color: rgb(111, 108, 108);
-	box-shadow: 3px 3px 3px #353535 inset;
-}
-
 .gameUp {
 	margin-left: 55px;
 	margin-right: 55px;
 }
 
-.gameLeft {
-	display: inline;
-}
-
-.gameDown {
-	display: inline;
-}
-
-.gameRight {
+.gameLeft, .gameDown, .gameRight {
 	display: inline;
 }
 
