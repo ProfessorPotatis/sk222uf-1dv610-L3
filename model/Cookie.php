@@ -12,7 +12,10 @@ class Cookie {
     }
 
     public function unsetCookieVariable(string $cookieVariable) {
-        unset($_COOKIE[$cookieVariable]);
+        if ($this->cookieIsSet($cookieVariable)) {
+            unset($_COOKIE[$cookieVariable]);
+            setcookie($cookieVariable, '', time() - 3600, '/'); // empty value and old timestamp, to delete cookie
+        }
     }
 
     public function cookieIsSet(string $cookieVariable) : bool {

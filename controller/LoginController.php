@@ -48,44 +48,35 @@ class LoginController {
     }
 
     public function handleUserRequest() {
+        $thereIsAMessage = $this->session->sessionVariableIsSet('message');
+        $thereIsACookie = $this->cookie->cookieIsSet($this->requestCookiePassword);
+        $userNotLoggedIn = $this->session->isLoggedIn() == false;
+
         if ($_POST) {
             $this->handleLoginRequest();
             $this->redirectToSelf();
-        } else if ($this->session->sessionVariableIsSet('message')) {
-            $this->message = $this->session->getSessionVariable('message');
-            $this->session->unsetSessionVariable('message');
-
-            if ($this->session->sessionVariableIsSet('username')) {
-                $this->username = $this->session->getSessionVariable('username');
-                $this->session->unsetSessionVariable('username');
-            }
-        } else if ($this->cookie->cookieIsSet($this->requestCookiePassword) && $this->session->isLoggedIn() == false) {
-            $cookieUsername = $this->cookie->getCookieVariable($this->requestCookieName);
-            $cookiePw = $this->cookie->getCookieVariable($this->requestCookiePassword);
-
-            if ($this->db->verifyCookie($cookieUsername, $cookiePw)) {
-                $this->session->setSessionVariable('message', 'Welcome back with cookie');
-                $this->session->setSessionVariable('loggedIn', true);
-                $this->message = $this->session->getSessionVariable('message');
-                $this->session->unsetSessionVariable('message');
-            } else {
-                $this->session->setSessionVariable('message', 'Wrong information in cookies');
-                $this->session->unsetSessionVariable('loggedIn');
-                $this->clearCookies();
-                $this->redirectToSelf();
-            }
+        } else if ($thereIsAMessage) {
+            $this->setMessage();
+            $this->setUsername();
+        } else if ($thereIsACookie && $userNotLoggedIn) {
+            $this->checkCookieCredentials();
         } else {
             $this->message = '';
         }
     }
 
     private function handleLoginRequest() {
-        if ($this->request->requestVariableIsSet($this->requestLogout)) {
+        $userWantsToLogOut = $this->request->requestVariableIsSet($this->requestLogout);
+        $userWantsToLogIn = $this->request->requestVariableIsSet($this->requestLogin);
+        $userNotLoggedIn = $this->session->isLoggedIn() == false;
+
+        if ($userWantsToLogOut) {
             $this->logout();
-        } else if ($this->request->requestVariableIsSet($this->requestLogin) && $this->session->isLoggedIn() == false) {
+        } else if ($userWantsToLogIn && $userNotLoggedIn) {
             $postedUsername = $this->request->getRequestVariable($this->requestUsername);
             $this->session->setSessionVariable('username', $postedUsername);
-            $this->username = $this->session->getSessionVariable('username');
+            $this->setUsername();
+
             $this->validateInputFields();
         } else {
             $this->message = '';
@@ -93,8 +84,12 @@ class LoginController {
     }
 
     private function logout() {
-        if ($this->session->isLoggedIn()) {
-            $this->clearCookies();
+        $userIsLoggedIn = $this->session->isLoggedIn();
+
+        if ($userIsLoggedIn) {
+            $this->clearCookie($this->requestCookieName);
+            $this->clearCookie($this->requestCookiePassword);
+
             $this->session->unsetSessionVariable('loggedIn');
             $this->session->setSessionVariable('message', 'Bye bye!');
             $this->session->regenerateSessionId();
@@ -103,22 +98,8 @@ class LoginController {
         }
     }
 
-    private function clearCookies() {
-        $userCookieIsSet = $this->cookie->cookieIsSet($this->requestCookieName);
-        $userCookie = $this->cookie->getCookieVariable($this->requestCookieName);
-
-        $passwordCookieIsSet = $this->cookie->cookieIsSet($this->requestCookiePassword);
-        $passwordCookie = $this->cookie->getCookieVariable($this->requestCookiePassword);
-
-        if ($userCookieIsSet) {
-            $this->cookie->unsetCookieVariable($userCookie);
-            setcookie($this->requestCookieName, '', time() - 3600, '/'); // empty value and old timestamp, to delete cookie
-        }
-
-        if ($passwordCookieIsSet) {
-            $this->cookie->unsetCookieVariable($passwordCookie);
-            setcookie($this->requestCookiePassword, '', time() - 3600, '/'); // empty value and old timestamp, to delete cookie
-        }
+    private function clearCookie($cookie) {
+        $this->cookie->unsetCookieVariable($cookie);
     }
 
     private function validateInputFields() {
@@ -131,14 +112,11 @@ class LoginController {
             $this->session->setSessionVariable('username', $postedUsername);
             $this->session->setSessionVariable('message', 'Password is missing');
         } else {
-            $this->authenticateUser();
+            $this->authenticateUser($postedUsername, $postedPassword);
         }
     }
 
-    private function authenticateUser() {
-        $postedUsername = $this->request->getRequestVariable($this->requestUsername);
-        $postedPassword = $this->request->getRequestVariable($this->requestPassword);
-
+    private function authenticateUser($postedUsername, $postedPassword) {
         $this->isAuthenticated = $this->db->authenticate($postedUsername, $postedPassword);
 
         if ($this->isAuthenticated) {
@@ -157,7 +135,9 @@ class LoginController {
     }
 
     private function keepLoggedIn() {
-        if ($this->request->requestVariableIsSet($this->requestKeep)) {
+        $checkedKeepLoggedInBox = $this->request->requestVariableIsSet($this->requestKeep);
+
+        if ($checkedKeepLoggedInBox) {
             $this->session->setSessionVariable('message', 'Welcome and you will be remembered');
             $this->setCookies();
         }
@@ -170,16 +150,43 @@ class LoginController {
         $this->cookie->setCookieVariable($this->requestCookieName, $postedUsername);
         $this->cookie->setCookieVariable($this->requestCookiePassword, $randomStr);
 
-        $this->saveCookiesToDatabase($randomStr);
+        $this->saveCookiesToDatabase($postedUsername, $randomStr);
     }
 
-    private function saveCookiesToDatabase($randomStr) {
-        $postedUsername = $this->request->getRequestVariable($this->requestUsername);
-
+    private function saveCookiesToDatabase($postedUsername, $randomStr) {
         $this->db->saveUserCookie($postedUsername, $randomStr);
     }
 
     private function redirectToSelf() {
         header('Location: ' . $_SERVER['PHP_SELF']);
+    }
+
+    private function setMessage() {
+        $this->message = $this->session->getSessionVariable('message');
+        $this->session->unsetSessionVariable('message');
+    }
+
+    private function setUsername() {
+        if ($this->session->sessionVariableIsSet('username')) {
+            $this->username = $this->session->getSessionVariable('username');
+            $this->session->unsetSessionVariable('username');
+        }
+    }
+
+    private function checkCookieCredentials() {
+        $cookieUsername = $this->cookie->getCookieVariable($this->requestCookieName);
+        $cookiePw = $this->cookie->getCookieVariable($this->requestCookiePassword);
+
+        if ($this->db->verifyCookie($cookieUsername, $cookiePw)) {
+            $this->session->setSessionVariable('message', 'Welcome back with cookie');
+            $this->session->setSessionVariable('loggedIn', true);
+            $this->message = $this->session->getSessionVariable('message');
+            $this->session->unsetSessionVariable('message');
+        } else {
+            $this->session->setSessionVariable('message', 'Wrong information in cookies');
+            $this->session->unsetSessionVariable('loggedIn');
+            $this->clearCookies();
+            $this->redirectToSelf();
+        }
     }
 }
